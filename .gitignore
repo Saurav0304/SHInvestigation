@@ -1,0 +1,31 @@
+# Unreal generated
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+Build/
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+# IDE / Visual Studio
+.vs/
+.idea/
+.vscode/
+*.sln
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+*.user
+
+# Compiled / packaged
+*.pdb
+*.dll
+*.exe
+*.lib
+*.obj
+
+# OS
+Thumbs.db
+.DS_Store
