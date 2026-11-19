@@ -14,9 +14,6 @@ public class SHInvestigation : ModuleRules
 			"Engine",
 			"InputCore",
 			"EnhancedInput",
-			"AIModule",
-			"StateTreeModule",
-			"GameplayStateTreeModule",
 			"UMG",
 			"Slate"
 		});
@@ -24,20 +21,7 @@ public class SHInvestigation : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
 		PublicIncludePaths.AddRange(new string[] {
-			"SHInvestigation",
-			"SHInvestigation/Variant_Platforming",
-			"SHInvestigation/Variant_Platforming/Animation",
-			"SHInvestigation/Variant_Combat",
-			"SHInvestigation/Variant_Combat/AI",
-			"SHInvestigation/Variant_Combat/Animation",
-			"SHInvestigation/Variant_Combat/Gameplay",
-			"SHInvestigation/Variant_Combat/Interfaces",
-			"SHInvestigation/Variant_Combat/UI",
-			"SHInvestigation/Variant_SideScrolling",
-			"SHInvestigation/Variant_SideScrolling/AI",
-			"SHInvestigation/Variant_SideScrolling/Gameplay",
-			"SHInvestigation/Variant_SideScrolling/Interfaces",
-			"SHInvestigation/Variant_SideScrolling/UI"
+			"SHInvestigation"
 		});
 
 		// Uncomment if you are using Slate UI
