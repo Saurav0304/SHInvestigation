@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "SHInvestigation.h"
+#include "Interaction/InteractionComponent.h"
 
 ASHInvestigationCharacter::ASHInvestigationCharacter()
 {
@@ -46,6 +47,9 @@ ASHInvestigationCharacter::ASHInvestigationCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	// Create the interaction component (replicated, so its Server RPC works from clients)
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("InteractionComponent"));
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -65,6 +69,16 @@ void ASHInvestigationCharacter::SetupPlayerInputComponent(UInputComponent* Playe
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASHInvestigationCharacter::Look);
+
+		// Interacting (Started = fires once per key press, holding E does not repeat)
+		if (InteractAction)
+		{
+			EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &ASHInvestigationCharacter::DoInteract);
+		}
+		else
+		{
+			UE_LOG(LogSHInvestigation, Warning, TEXT("'%s' has no InteractAction assigned. Set it in the character Blueprint's Class Defaults."), *GetNameSafe(this));
+		}
 	}
 	else
 	{
@@ -130,4 +144,13 @@ void ASHInvestigationCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void ASHInvestigationCharacter::DoInteract()
+{
+	// the component validates focus locally and sends the request to the server
+	if (InteractionComponent)
+	{
+		InteractionComponent->TryInteract();
+	}
 }

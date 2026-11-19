@@ -22,7 +22,7 @@ public class SHInvestigation : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"SHInvestigation"
-		});
+        });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
