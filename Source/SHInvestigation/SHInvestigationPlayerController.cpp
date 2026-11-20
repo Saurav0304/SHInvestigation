@@ -11,11 +11,15 @@
 #include "GameFramework/Pawn.h"
 #include "Interaction/InteractionComponent.h"
 #include "UI/InteractionPromptWidget.h"
+#include "UI/InvestigationHUDWidget.h"
+#include "EnhancedInputComponent.h"
+#include "InputAction.h"
 
 ASHInvestigationPlayerController::ASHInvestigationPlayerController()
 {
 	// default prompt works without any Blueprint layout; a WBP child can be assigned in the BP to restyle it
 	InteractionPromptWidgetClass = UInteractionPromptWidget::StaticClass();
+	InvestigationHUDWidgetClass = UInvestigationHUDWidget::StaticClass();
 }
 
 void ASHInvestigationPlayerController::BeginPlay()
@@ -41,8 +45,33 @@ void ASHInvestigationPlayerController::BeginPlay()
 
 	}
 
+	// coming from the main menu (UI-only input, visible cursor): hand input back to the game
+	if (IsLocalPlayerController())
+	{
+		SetInputMode(FInputModeGameOnly());
+		bShowMouseCursor = false;
+	}
+
 	// create the interaction prompt and bind it to whatever pawn we already have
 	RefreshInteractionPrompt();
+
+	// investigation HUD only for the player at this machine; it binds to the GameState by itself
+	if (IsLocalPlayerController() && InvestigationHUDWidgetClass)
+	{
+		InvestigationHUDWidget = CreateWidget<UInvestigationHUDWidget>(this, InvestigationHUDWidgetClass);
+		if (InvestigationHUDWidget)
+		{
+			InvestigationHUDWidget->AddToPlayerScreen(0);
+		}
+	}
+}
+
+void ASHInvestigationPlayerController::ToggleJournal()
+{
+	if (InvestigationHUDWidget)
+	{
+		InvestigationHUDWidget->ToggleJournal();
+	}
 }
 
 void ASHInvestigationPlayerController::SetPawn(APawn* InPawn)
@@ -110,6 +139,19 @@ void ASHInvestigationPlayerController::SetupInputComponent()
 				{
 					Subsystem->AddMappingContext(CurrentContext, 0);
 				}
+			}
+		}
+
+		// UI input belongs to the controller (it owns the HUD), gameplay input to the character
+		if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+		{
+			if (JournalAction)
+			{
+				EnhancedInputComponent->BindAction(JournalAction, ETriggerEvent::Started, this, &ASHInvestigationPlayerController::ToggleJournal);
+			}
+			else
+			{
+				UE_LOG(LogSHInvestigation, Warning, TEXT("'%s' has no JournalAction assigned. Set it in the PlayerController Blueprint's Class Defaults."), *GetNameSafe(this));
 			}
 		}
 	}

@@ -15,10 +15,15 @@ public class SHInvestigation : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"UMG",
-			"Slate"
+			"Slate",
+			"SlateCore"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		// Sessions (host / find / join) through the Online Subsystem interface
+		PrivateDependencyModuleNames.AddRange(new string[] {
+			"OnlineSubsystem",
+			"OnlineSubsystemUtils"
+		});
 
 		PublicIncludePaths.AddRange(new string[] {
 			"SHInvestigation"

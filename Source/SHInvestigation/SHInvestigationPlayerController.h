@@ -9,6 +9,8 @@
 class UInputMappingContext;
 class UUserWidget;
 class UInteractionPromptWidget;
+class UInvestigationHUDWidget;
+class UInputAction;
 
 /**
  *  Basic PlayerController class for a third person game
@@ -51,6 +53,21 @@ protected:
 
 	/** Creates the prompt widget if needed and binds it to the current pawn's interaction component */
 	void RefreshInteractionPrompt();
+
+	/** Investigation HUD (evidence counter, inspect panel, journal). Defaults to the C++ layout */
+	UPROPERTY(EditAnywhere, Category="UI")
+	TSubclassOf<UInvestigationHUDWidget> InvestigationHUDWidgetClass;
+
+	/** Pointer to the investigation HUD (local player only) */
+	UPROPERTY()
+	TObjectPtr<UInvestigationHUDWidget> InvestigationHUDWidget;
+
+	/** Toggles the evidence journal (Tab) */
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> JournalAction;
+
+	/** Opens/closes the evidence journal */
+	void ToggleJournal();
 
 public:
 
